@@ -27,23 +27,20 @@ namespace MeterReadings.Logic.Collections
         public void SubmitMeterReadings(IEnumerable<MeterReading> meterReadings, out List<string> validationMessages)
         {
             List<string> validations = new List<string>();
-            AccountCollection accounts = new AccountCollection()
-            {
-                AccountIDs = new IsInFilter<int>(true)
-            };
-            accounts.AccountIDs.AddRange(meterReadings.Select(x => x.AccountID));
-            accounts.DataHouse.IncludeRelationship<Model.Objects.Account, Model.Objects.MeterReading>();
+            AccountIDs = new IsInFilter<int>(true);
+            AccountIDs.AddRange(meterReadings.Select(x => x.AccountID));
+            DataHouse.IncludeRelationship<Model.Objects.Account, Model.Objects.MeterReading>();
 
-            ReadMeterReadingCollection(accounts, _connectionProvider);
+            ReadMeterReadingCollection(this, _connectionProvider);
             List<int> missingAccountIDs = GetMissingAccountIDs(
-                accounts, meterReadings.ToList(), out List<string> duplicateMessages);
+                this, meterReadings.ToList(), out List<string> duplicateMessages);
 
             validations.AddRange(duplicateMessages);
 
             IEnumerable<MeterReading> matchingMeterReadings = meterReadings
                 .Where(x => !missingAccountIDs.Contains(x.AccountID));
 
-            List<int> duplicateMeterReadingIDs = GetDuplicateMeterReadingIDs(accounts, matchingMeterReadings, out duplicateMessages, 
+            List<int> duplicateMeterReadingIDs = GetDuplicateMeterReadingIDs(this, matchingMeterReadings, out duplicateMessages, 
                 out Dictionary<Account, List<MeterReading>> newMeterReadings);
 
             validations.AddRange(duplicateMessages);
@@ -51,7 +48,7 @@ namespace MeterReadings.Logic.Collections
             IEnumerable<MeterReading> validMeterReadings = matchingMeterReadings
                 .Where(x => !duplicateMeterReadingIDs.Contains(x.MeterReadingID));
 
-            PostMeterReadings(accounts, newMeterReadings);
+            PostMeterReadings(this, newMeterReadings);
 
             validationMessages = validations;
         }

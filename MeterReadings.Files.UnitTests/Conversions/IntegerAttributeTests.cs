@@ -10,10 +10,11 @@ namespace MeterReadings.Files.UnitTests.Conversions
     public class IntegerAttributeTests
     {
         [TestCase("45114", true, 45114)]
+        [TestCase("999999", true, 999999)]
+        [TestCase(" 0415", true, 415)]
         [TestCase("00943", true, 943)]
         [TestCase("VOID", false, 0)]
         [TestCase("0x332", false, 0)]
-        [TestCase(" 0415", false, 0)]
         public void ShouldConvertReturnCorrectly(string inputValue, bool expectedResult, IConvertible expectedConversionValue)
         {
             IntegerAttribute attribute = new IntegerAttribute();

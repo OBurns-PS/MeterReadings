@@ -11,7 +11,7 @@ namespace MeterReadings.API.Controllers
         [HttpPost]
         public FileImportResult UploadMeterReadFile(SystemFile file)
         {
-            return MeterReadingsFile.ImportFromFile(file.FileName, file.FileContents);
+            return new MeterReadingsFile(file.FileName, file.FileContents).ImportFromFile();
         }
     }
 }

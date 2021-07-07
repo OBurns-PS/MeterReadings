@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeterReadings.Files.UnitTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeterReadings.Logic.UnitTests", "MeterReadings.Logic.UnitTests\MeterReadings.Logic.UnitTests.csproj", "{C87A7D92-BCED-4D0A-BC04-7E4FC8712012}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeterReadings.UnitTestHelpers", "MeterReadings.UnitTestHelpers\MeterReadings.UnitTestHelpers.csproj", "{229EFB6E-B2DC-4ED3-874A-D9D6371E7F5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{C87A7D92-BCED-4D0A-BC04-7E4FC8712012}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C87A7D92-BCED-4D0A-BC04-7E4FC8712012}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C87A7D92-BCED-4D0A-BC04-7E4FC8712012}.Release|Any CPU.Build.0 = Release|Any CPU
+		{229EFB6E-B2DC-4ED3-874A-D9D6371E7F5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{229EFB6E-B2DC-4ED3-874A-D9D6371E7F5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{229EFB6E-B2DC-4ED3-874A-D9D6371E7F5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{229EFB6E-B2DC-4ED3-874A-D9D6371E7F5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

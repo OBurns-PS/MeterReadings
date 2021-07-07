@@ -4,6 +4,8 @@ using BRepo.Files.Reporting.Validation;
 using BRepo.Files.Reporting.Validation.Types;
 using MeterReadings.Files.ImportResult;
 using MeterReadings.Logic.Collections;
+using MeterReadings.Logic.Interface;
+using MeterReadings.Logic.Providers;
 using MeterReadings.Logic.Records;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,17 +16,23 @@ namespace MeterReadings.Files.MeterReadings
         : DelimitedFile<IgnoreHeader, MeterReadingsRecord, IgnoreFooter>
     {
         public MeterReadingsFile(string fileName, byte[] fileContents) 
-            : base(fileName, fileContents)
+            : this(fileName, fileContents, ConnectionProvider.Instance)
         { }
+
+        public MeterReadingsFile(string fileName, byte[] fileContents, IConnectionProvider connectionProvider)
+            : base(fileName, fileContents)
+        {
+            _connectionProvider = connectionProvider;
+        }
 
         public override bool ValidateFileName()
         {
             return true;
         }
 
-        public static FileImportResult ImportFromFile(string fileName, byte[] fileArray)
+        public FileImportResult ImportFromFile()
         {
-            MeterReadingsFile file = new MeterReadingsFile(fileName, fileArray);
+            MeterReadingsFile file = new MeterReadingsFile(FileName, FileContents);
             FileObject<IgnoreHeader, MeterReadingsRecord, IgnoreFooter> importObject = file.Parse();
 
             List<string> failureMessages = new List<string>();
@@ -57,9 +65,9 @@ namespace MeterReadings.Files.MeterReadings
             return new FileImportResult(successCount, failureCount, duplicateItems, failureMessages.ToArray());
         }
 
-        private static void SubmitMeterReadings(IEnumerable<MeterReading> meterReadings, out List<string> validationMessages)
+        private void SubmitMeterReadings(IEnumerable<MeterReading> meterReadings, out List<string> validationMessages)
         {
-            AccountCollection accounts = new AccountCollection();
+            AccountCollection accounts = new AccountCollection(_connectionProvider);
             accounts.SubmitMeterReadings(meterReadings, out validationMessages);
         }
 
@@ -72,5 +80,7 @@ namespace MeterReadings.Files.MeterReadings
                 MeterReadValue = x.MeterReadValue
             });
         }
+
+        private readonly IConnectionProvider _connectionProvider;
     }
 }

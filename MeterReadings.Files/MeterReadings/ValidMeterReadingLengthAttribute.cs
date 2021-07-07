@@ -13,6 +13,10 @@ namespace MeterReadings.Files.MeterReadings
 
         public override bool IsValid(string value, IFileComponent fileComponent)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
             return value.Length.Equals(_meterReadingLength);
         }
 
