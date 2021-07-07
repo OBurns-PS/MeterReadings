@@ -6,6 +6,9 @@ using System.Runtime.CompilerServices;
 
 namespace MeterReadings.Files.Conversions
 {
+    /// <summary>
+    /// Converts a value to a 32-bit integer.
+    /// </summary>
     public class IntegerAttribute : CustomValueConversionBase
     {
         public IntegerAttribute([CallerMemberName] string propertyName = "") 

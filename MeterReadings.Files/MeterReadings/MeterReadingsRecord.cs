@@ -6,6 +6,9 @@ using System;
 
 namespace MeterReadings.Files.MeterReadings
 {
+    /// <summary>
+    /// A meter reading file record.
+    /// </summary>
     public class MeterReadingsRecord : IFileDetails
     {
         [FieldOrder(1)]

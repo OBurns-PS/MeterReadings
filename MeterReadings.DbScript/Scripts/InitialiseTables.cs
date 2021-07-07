@@ -4,6 +4,9 @@ using MeterReadings.Model.Objects;
 
 namespace MeterReadings.DbScript.Scripts
 {
+    /// <summary>
+    /// Initialises tables within the DB.
+    /// </summary>
     public class InitialiseTables : IDbScript
     {
         public string ScriptName => nameof(InitialiseTables);

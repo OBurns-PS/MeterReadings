@@ -24,6 +24,11 @@ namespace MeterReadings.Logic.Collections
             _connectionProvider = connectionProvider;
         }
 
+        /// <summary>
+        /// Validates meter readings and, if valid, posts them to the DB.
+        /// </summary>
+        /// <param name="meterReadings">The meter readings to validation / post.</param>
+        /// <param name="validationMessages">Any validation messages raised as a result of posting the readings.</param>
         public void SubmitMeterReadings(IEnumerable<MeterReading> meterReadings, out List<string> validationMessages)
         {
             List<string> validations = new List<string>();

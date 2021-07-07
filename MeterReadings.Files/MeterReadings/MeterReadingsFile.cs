@@ -30,6 +30,10 @@ namespace MeterReadings.Files.MeterReadings
             return true;
         }
 
+        /// <summary>
+        /// Imports meter readings contained within the file.
+        /// </summary>
+        /// <returns>A <c>FileImportResult</c>, containing details of the file import result.</returns>
         public FileImportResult ImportFromFile()
         {
             MeterReadingsFile file = new MeterReadingsFile(FileName, FileContents);

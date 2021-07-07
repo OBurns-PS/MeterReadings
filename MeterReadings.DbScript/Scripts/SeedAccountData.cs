@@ -9,6 +9,9 @@ using System.Linq;
 
 namespace MeterReadings.DbScript.Scripts
 {
+    /// <summary>
+    /// Seeds the chosen DB with initial Account data.
+    /// </summary>
     public class SeedAccountData : IDbScript
     {
         public string ScriptName => nameof(SeedAccountData);

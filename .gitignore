@@ -2,3 +2,5 @@
 /*/obj/*
 /packages/*
 /.vs/*
+/MeterReadings.API/App_Data/Documentation.xml
+/MeterReadings.Files/MeterReadings.API/App_Data/Documentation.xml

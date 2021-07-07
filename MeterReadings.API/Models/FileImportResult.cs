@@ -1,4 +1,4 @@
-﻿namespace MeterReadings.Files.ImportResult
+﻿namespace MeterReadings.API.Models
 {
     /// <summary>
     /// Contains details and results of a file import.
@@ -24,13 +24,26 @@
         /// The messages associated with the file import.
         /// </summary>
         public string[] FailureMessages { get; }
-        
-        public FileImportResult(int successCount, int failureCount, int duplicateCount, params string[] failureMessages)
+
+        private FileImportResult(int successCount, int failureCount, int duplicateCount, params string[] failureMessages)
         {
             SuccessCount = successCount;
             FailureCount = failureCount;
             FileDuplicates = duplicateCount;
             FailureMessages = failureMessages;
+        }
+
+        /// <summary>
+        /// Converts a file import process to an API FileImportResult.
+        /// </summary>
+        /// <param name="fileImportResult">The inbound FileImportResult to convert.</param>
+        public static explicit operator FileImportResult(Files.ImportResult.FileImportResult fileImportResult)
+        {
+            return new FileImportResult(
+                fileImportResult.SuccessCount,
+                fileImportResult.FailureCount,
+                fileImportResult.FileDuplicates,
+                fileImportResult.FailureMessages);
         }
     }
 }
