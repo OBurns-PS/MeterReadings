@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0097749A-CA95-4071-A51E-5BADD718AF65}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MeterReadings.Files</RootNamespace>
+    <AssemblyName>MeterReadings.Files</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BRepo.Files, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BRepo.Files.1.0.3\lib\net471\BRepo.Files.dll</HintPath>
+    </Reference>
+    <Reference Include="BRepo.Linq, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BRepo.Linq.1.0.0\lib\net471\BRepo.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="BRepo.ObjectFunctions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BRepo.ObjectFunctions.1.0.0\lib\net471\BRepo.ObjectFunctions.dll</HintPath>
+    </Reference>
+    <Reference Include="Crudinski.Data, Version=1.1.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Crudinski.Data.1.1.11\lib\net471\Crudinski.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Crudinski.DataTypes, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Crudinski.DataTypes.1.0.9\lib\net471\Crudinski.DataTypes.dll</HintPath>
+    </Reference>
+    <Reference Include="Crudinski.Entity, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Crudinski.Entity.1.2.1\lib\net471\Crudinski.Entity.dll</HintPath>
+    </Reference>
+    <Reference Include="FastMember, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FastMember.1.5.0\lib\net461\FastMember.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Conversions\IntegerAttribute.cs" />
+    <Compile Include="ImportResult\FileImportResult.cs" />
+    <Compile Include="ImportResult\ImportResult.cs" />
+    <Compile Include="ImportResult\ImportStatus.cs" />
+    <Compile Include="MeterReadings\MeterReadingsFile.cs" />
+    <Compile Include="MeterReadings\MeterReadingsRecord.cs" />
+    <Compile Include="MeterReadings\MeterReadingsValidationMessages.cs" />
+    <Compile Include="MeterReadings\ValidMeterReadingValueAttribute.cs" />
+    <Compile Include="MeterReadings\ValidMeterReadingLengthAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MeterReadings.Logic\MeterReadings.Logic.csproj">
+      <Project>{952cf5e1-b9fd-4c75-ba31-49ed45b49481}</Project>
+      <Name>MeterReadings.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MeterReadings.Model\MeterReadings.Model.csproj">
+      <Project>{f89dbdb1-7ace-4f8f-aa8e-1ff492ac4c8b}</Project>
+      <Name>MeterReadings.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

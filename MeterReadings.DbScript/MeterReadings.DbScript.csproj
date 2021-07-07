@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0C6F8B18-5AAB-4C48-A6D3-5B4127C3B46E}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MeterReadings.DbScript</RootNamespace>
+    <AssemblyName>MeterReadings.DbScript</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BRepo.Files, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BRepo.Files.1.0.0\lib\net471\BRepo.Files.dll</HintPath>
+    </Reference>
+    <Reference Include="BRepo.Linq, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BRepo.Linq.1.0.0\lib\net471\BRepo.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="BRepo.ObjectFunctions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BRepo.ObjectFunctions.1.0.0\lib\net471\BRepo.ObjectFunctions.dll</HintPath>
+    </Reference>
+    <Reference Include="Crudinski.Data, Version=1.1.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Crudinski.Data.1.1.11\lib\net471\Crudinski.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Crudinski.DataTypes, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Crudinski.DataTypes.1.0.9\lib\net471\Crudinski.DataTypes.dll</HintPath>
+    </Reference>
+    <Reference Include="Crudinski.Entity, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Crudinski.Entity.1.2.1\lib\net471\Crudinski.Entity.dll</HintPath>
+    </Reference>
+    <Reference Include="Crudinski.Tools.DbScript, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Crudinski.Tools.DbScript.1.0.5\lib\net471\Crudinski.Tools.DbScript.dll</HintPath>
+    </Reference>
+    <Reference Include="Crudinski.Tools.DbScript.Tsql, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Crudinski.Tools.DbScript.Tsql.1.0.7\lib\net471\Crudinski.Tools.DbScript.Tsql.dll</HintPath>
+    </Reference>
+    <Reference Include="FastMember, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FastMember.1.5.0\lib\net461\FastMember.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DbFunctionParserProvider.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScriptMasterList.cs" />
+    <Compile Include="Scripts\InitialiseTables.cs" />
+    <Compile Include="Scripts\SeedAccountData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MeterReadings.Logic\MeterReadings.Logic.csproj">
+      <Project>{952cf5e1-b9fd-4c75-ba31-49ed45b49481}</Project>
+      <Name>MeterReadings.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MeterReadings.Model\MeterReadings.Model.csproj">
+      <Project>{f89dbdb1-7ace-4f8f-aa8e-1ff492ac4c8b}</Project>
+      <Name>MeterReadings.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
