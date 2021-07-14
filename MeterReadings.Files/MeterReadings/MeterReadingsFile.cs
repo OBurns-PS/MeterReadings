@@ -6,7 +6,7 @@ using MeterReadings.Files.ImportResult;
 using MeterReadings.Logic.Collections;
 using MeterReadings.Logic.Interface;
 using MeterReadings.Logic.Providers;
-using MeterReadings.Logic.Records;
+using MeterReadings.Model.Objects;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -69,20 +69,21 @@ namespace MeterReadings.Files.MeterReadings
             return new FileImportResult(successCount, failureCount, duplicateItems, failureMessages.ToArray());
         }
 
-        private void SubmitMeterReadings(IEnumerable<MeterReading> meterReadings, out List<string> validationMessages)
+        private void SubmitMeterReadings(List<MeterReading> meterReadings, out List<string> validationMessages)
         {
             AccountCollection accounts = new AccountCollection(_connectionProvider);
             accounts.SubmitMeterReadings(meterReadings, out validationMessages);
         }
 
-        private static IEnumerable<MeterReading> ConvertMeterReadings(IEnumerable<MeterReadingsRecord> fileRecords)
+        private static List<MeterReading> ConvertMeterReadings(IEnumerable<MeterReadingsRecord> fileRecords)
         {
             return fileRecords.Select(x => new MeterReading()
             {
                 AccountID = x.AccountID,
                 MeterReadingDateTime = x.MeterReadingDateTime,
                 MeterReadValue = x.MeterReadValue
-            });
+            })
+                .ToList();
         }
 
         private readonly IConnectionProvider _connectionProvider;

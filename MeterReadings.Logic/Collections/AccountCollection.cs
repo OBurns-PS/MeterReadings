@@ -1,16 +1,21 @@
 ﻿using Crudinski.Entity.Logic.Attributes;
+using Crudinski.Entity.Logic.Context;
 using Crudinski.Entity.Logic.Filters;
+using Crudinski.Entity.Logic.Lists;
 using MeterReadings.Logic.Interface;
 using MeterReadings.Logic.Providers;
-using MeterReadings.Logic.Records;
+using MeterReadings.Model;
+using MeterReadings.Model.Objects;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
 namespace MeterReadings.Logic.Collections
 {
-    public class AccountCollection : MeterReadingCollection<Account>
+    public class AccountCollection : DataItemList<Account>, IAccountCollection
     {
+        public override DataHouse DataHouse { get; } = new MeterReadingsDataHouse();
+
         [Filter(nameof(Account.AccountID), false)]
         public IsInFilter<int> AccountIDs { get; set; }
 
@@ -29,39 +34,23 @@ namespace MeterReadings.Logic.Collections
         /// </summary>
         /// <param name="meterReadings">The meter readings to validation / post.</param>
         /// <param name="validationMessages">Any validation messages raised as a result of posting the readings.</param>
-        public void SubmitMeterReadings(IEnumerable<MeterReading> meterReadings, out List<string> validationMessages)
+        public void SubmitMeterReadings(List<MeterReading> meterReadings, out List<string> validationMessages)
         {
-            List<string> validations = new List<string>();
-            AccountIDs = new IsInFilter<int>(true);
-            AccountIDs.AddRange(meterReadings.Select(x => x.AccountID));
-            DataHouse.IncludeRelationship<Model.Objects.Account, Model.Objects.MeterReading>();
+            validationMessages = new List<string>();
+            GetAccounts(meterReadings.Select(x => x.AccountID));
 
-            ReadMeterReadingCollection(this, _connectionProvider);
-            List<int> missingAccountIDs = GetMissingAccountIDs(
-                this, meterReadings.ToList(), out List<string> duplicateMessages);
+            ValidateMissingAccountIds(this, meterReadings, validationMessages);
 
-            validations.AddRange(duplicateMessages);
+            Dictionary<Account, List<MeterReading>> validAccountMeterReadings 
+                = GetValidDedupeMeterReadings(this, meterReadings, validationMessages);
 
-            IEnumerable<MeterReading> matchingMeterReadings = meterReadings
-                .Where(x => !missingAccountIDs.Contains(x.AccountID));
-
-            List<int> duplicateMeterReadingIDs = GetDuplicateMeterReadingIDs(this, matchingMeterReadings, out duplicateMessages, 
-                out Dictionary<Account, List<MeterReading>> newMeterReadings);
-
-            validations.AddRange(duplicateMessages);
-
-            IEnumerable<MeterReading> validMeterReadings = matchingMeterReadings
-                .Where(x => !duplicateMeterReadingIDs.Contains(x.MeterReadingID));
-
-            PostMeterReadings(this, newMeterReadings);
-
-            validationMessages = validations;
+            AddMeterReadingsToAccounts(validAccountMeterReadings);
+            SubmitAccountReadings();
         }
 
-        private static List<int> GetMissingAccountIDs(AccountCollection accounts, List<MeterReading> meterReadings, out List<string> duplicateMessages)
+        private void ValidateMissingAccountIds(AccountCollection accounts, List<MeterReading> meterReadings, List<string> validationMessages)
         {
             HashSet<int> missingAccountIDs = new HashSet<int>();
-            duplicateMessages = new List<string>();
 
             for (int i = meterReadings.Count - 1; i >= 0; i--)
             {
@@ -69,49 +58,62 @@ namespace MeterReadings.Logic.Collections
                 Account matchingAccount = accounts.FirstOrDefault(x => x.AccountID == meterReading.AccountID);
                 if (matchingAccount == null)
                 {
-                    duplicateMessages.Add(GetMissingAccountMessage(meterReading.AccountID));
+                    validationMessages.Add(GetMissingAccountMessage(meterReading.AccountID));
                     missingAccountIDs.Add(meterReading.AccountID);
                 }
             }
-            return missingAccountIDs.ToList();
+            meterReadings.RemoveAll(x => missingAccountIDs.Contains(x.AccountID));
         }
 
-        private static List<int> GetDuplicateMeterReadingIDs(AccountCollection accounts, IEnumerable<MeterReading> meterReadings, out List<string> duplicateMessages,
-            out Dictionary<Account, List<MeterReading>> newMeterReadings)
+        private static Dictionary<Account, List<MeterReading>> GetValidDedupeMeterReadings(
+            AccountCollection accounts, List<MeterReading> meterReadings, List<string> validationMessages)
         {
-            newMeterReadings = new Dictionary<Account, List<MeterReading>>();
-            HashSet<int> duplicateReadingIDs = new HashSet<int>();
-            duplicateMessages = new List<string>();
+            Dictionary<Account, List<MeterReading>> result 
+                = new Dictionary<Account, List<MeterReading>>();
 
             foreach(MeterReading meterReading in meterReadings)
             {
-                Account matchingAccount = accounts.First(x => x.AccountID == meterReading.AccountID);
-                if (matchingAccount.MeterReading.Any(
-                        x => x.MeterReadingDateTime.Date.Ticks == meterReading.MeterReadingDateTime.Date.Ticks
-                            && x.MeterReadValue == meterReading.MeterReadValue))
-                {
-                    duplicateReadingIDs.Add(meterReading.MeterReadingID);
-                    duplicateMessages.Add(GetDuplicateMeterReadingMessage(meterReading.AccountID));
-                }
-                else
-                {
-                    if (!newMeterReadings.ContainsKey(matchingAccount))
-                    {
-                        newMeterReadings[matchingAccount] = new List<MeterReading>();
-                    }
-                    newMeterReadings[matchingAccount].Add(meterReading);
-                }
+                CheckForDuplicateReading(accounts, validationMessages, result, meterReading);
             }
-            return duplicateReadingIDs.ToList();
+            return result;
         }
 
-        private void PostMeterReadings(AccountCollection accounts, Dictionary<Account, List<MeterReading>> newMeterReadings)
+        private static void CheckForDuplicateReading(AccountCollection accounts, List<string> duplicateMessages, 
+            Dictionary<Account, List<MeterReading>> newMeterReadings, MeterReading meterReading)
         {
-            foreach(var newMeterReadingAccount in newMeterReadings)
+            Account matchingAccount = accounts.First(x => x.AccountID == meterReading.AccountID);
+            if (matchingAccount.MeterReading.Any(
+                    x => x.MeterReadingDateTime.Date.Ticks == meterReading.MeterReadingDateTime.Date.Ticks
+                        && x.MeterReadValue == meterReading.MeterReadValue))
             {
-                newMeterReadingAccount.Key.MeterReading.AddRange(newMeterReadingAccount.Value);
+                duplicateMessages.Add(GetDuplicateMeterReadingMessage(meterReading.AccountID));
             }
+            else
+            {
+                if (!newMeterReadings.ContainsKey(matchingAccount))
+                {
+                    newMeterReadings[matchingAccount] = new List<MeterReading>();
+                }
+                newMeterReadings[matchingAccount].Add(meterReading);
+            }
+        }
 
+        public List<Account> GetAccounts(IEnumerable<int> accountIds)
+        {
+            AccountIDs = new IsInFilter<int>(true);
+            DataHouse.IncludeRelationship<Account, MeterReading>();
+            AccountIDs.AddRange(accountIds);
+            using (IDbConnection connection = _connectionProvider.GetConnection())
+            {
+                connection.Open();
+                Read(connection, null, ParserProvider.Instance);
+                connection.Close();
+            }
+            return this.ToList();
+        }
+
+        public void SubmitAccountReadings()
+        {
             using (IDbConnection connection = _connectionProvider.GetConnection())
             {
                 try
@@ -121,19 +123,28 @@ namespace MeterReadings.Logic.Collections
                     {
                         try
                         {
-                            accounts.Save(connection, transaction, ParserProvider.Instance);
-                            transaction.Commit();
+                            Save(connection, transaction, ParserProvider.Instance);
                         }
                         catch
                         {
                             transaction.Rollback();
+                            throw;
                         }
                     }
+                    connection.Close();
                 }
                 finally
                 {
                     connection.Close();
                 }
+            }
+        }
+
+        private static void AddMeterReadingsToAccounts(Dictionary<Account, List<MeterReading>> validAccountMeterReadings)
+        {
+            foreach(KeyValuePair<Account, List<MeterReading>> accountMeterReadings in validAccountMeterReadings)
+            {
+                accountMeterReadings.Key.MeterReading.AddRange(accountMeterReadings.Value);
             }
         }
 

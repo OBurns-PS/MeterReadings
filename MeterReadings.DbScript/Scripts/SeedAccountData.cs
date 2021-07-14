@@ -2,7 +2,7 @@
 using Crudinski.Tools.DbScript.Db;
 using Crudinski.Tools.DbScript.Model.Interface;
 using MeterReadings.Logic.Collections;
-using MeterReadings.Logic.Records;
+using MeterReadings.Model.Objects;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;

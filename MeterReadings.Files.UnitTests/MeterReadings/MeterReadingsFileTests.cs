@@ -2,7 +2,7 @@
 using MeterReadings.Files.ImportResult;
 using MeterReadings.Files.MeterReadings;
 using MeterReadings.Logic.Interface;
-using MeterReadings.Logic.Records;
+using MeterReadings.Model.Objects;
 using MeterReadings.UnitTestHelpers.Helpers;
 using Moq;
 using NUnit.Framework;

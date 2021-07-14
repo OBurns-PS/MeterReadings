@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using MeterReadings.Logic.Collections;
 using MeterReadings.Logic.Interface;
-using MeterReadings.Logic.Records;
+using MeterReadings.Model.Objects;
 using MeterReadings.UnitTestHelpers.Helpers;
 using Moq;
 using NUnit.Framework;
